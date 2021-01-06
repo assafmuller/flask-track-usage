@@ -41,6 +41,7 @@ from six.moves.urllib.request import urlopen
 import six
 
 from flask import _request_ctx_stack, g
+from flask import session
 
 __version__ = '2.0.0'
 __author__ = 'Steve Milner'
@@ -182,8 +183,10 @@ class TrackUsage(object):
             'username': None,
             'track_var': g.track_var
         }
-        if ctx.request.authorization:
-            data['username'] = str(ctx.request.authorization.username)
+
+        if session.get('user'):
+            data['username'] = session['user']['email']
+
         if self._use_freegeoip:
             clean_ip = quote_plus(str(ctx.request.remote_addr))
             if '{ip}' in self._freegeoip_endpoint:
